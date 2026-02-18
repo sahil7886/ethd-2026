@@ -1,18 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 type ApiResponse = {
   ok?: boolean;
   username?: string;
+  loggedIn?: boolean;
   error?: string;
 };
 
-export function AuthPanel() {
+export function AuthPanel({ initiallyLoggedIn, initialUsername }: { initiallyLoggedIn: boolean; initialUsername: string | null }) {
+  const router = useRouter();
   const [signupMessage, setSignupMessage] = useState<string>("");
   const [loginMessage, setLoginMessage] = useState<string>("");
   const [signupLoading, setSignupLoading] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(initiallyLoggedIn);
+  const [username, setUsername] = useState<string | null>(initialUsername);
 
   async function onSignup(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -21,7 +27,7 @@ export function AuthPanel() {
     setSignupMessage("");
 
     const formData = new FormData(form);
-    const username = String(formData.get("username") ?? "").trim();
+    const usernameInput = String(formData.get("username") ?? "").trim();
     const password = String(formData.get("password") ?? "");
 
     if (password.length < 8) {
@@ -33,7 +39,7 @@ export function AuthPanel() {
     const response = await fetch("/api/auth/signup", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username: usernameInput, password })
     });
 
     const data = (await response.json()) as ApiResponse;
@@ -54,13 +60,13 @@ export function AuthPanel() {
     setLoginMessage("");
 
     const formData = new FormData(event.currentTarget);
-    const username = String(formData.get("username") ?? "").trim();
+    const usernameInput = String(formData.get("username") ?? "").trim();
     const password = String(formData.get("password") ?? "");
 
     const response = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify({ username: usernameInput, password })
     });
 
     const data = (await response.json()) as ApiResponse;
@@ -71,7 +77,21 @@ export function AuthPanel() {
       return;
     }
 
+    setLoggedIn(Boolean(data.loggedIn));
+    setUsername(data.username ?? null);
     setLoginMessage(`Login successful. Welcome, ${data.username}.`);
+    router.refresh();
+  }
+
+  async function onLogout() {
+    setLogoutLoading(true);
+    setLoginMessage("");
+
+    await fetch("/api/auth/logout", { method: "POST" });
+    setLoggedIn(false);
+    setUsername(null);
+    setLogoutLoading(false);
+    router.refresh();
   }
 
   return (
@@ -80,6 +100,15 @@ export function AuthPanel() {
       <p style={{ marginTop: 0 }}>
         Credentials are stored in <code>data/users.txt</code> as plain text for hackathon scaffolding.
       </p>
+
+      <div className="card stack">
+        <strong>{loggedIn ? `Logged in as @${username}` : "Not logged in"}</strong>
+        <div>
+          <button type="button" className="secondary" onClick={onLogout} disabled={!loggedIn || logoutLoading}>
+            {logoutLoading ? "Logging out..." : "Logout"}
+          </button>
+        </div>
+      </div>
 
       <div className="grid">
         <form className="card stack" onSubmit={onSignup}>

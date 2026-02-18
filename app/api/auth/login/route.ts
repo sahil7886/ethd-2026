@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { AUTH_COOKIE_NAME } from "@/lib/session";
 import { verifyLogin } from "@/lib/userStore";
 
 export const runtime = "nodejs";
@@ -19,5 +20,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
   }
 
-  return NextResponse.json({ ok: true, username }, { status: 200 });
+  const response = NextResponse.json({ ok: true, username, loggedIn: true }, { status: 200 });
+  response.cookies.set(AUTH_COOKIE_NAME, username, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7
+  });
+
+  return response;
 }
