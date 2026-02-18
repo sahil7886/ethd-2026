@@ -10,7 +10,7 @@ export default async function AssociateUsernamePage() {
   }
 
   if (auth.hasUsername) {
-    redirect("/posts");
+    redirect("/");
   }
 
   return <AssociateUsernameForm walletAddress={auth.walletAddress} />;

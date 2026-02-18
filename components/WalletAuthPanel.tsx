@@ -125,7 +125,7 @@ export function WalletAuthPanel({
       setMessage("Wallet login successful.");
 
       if (verifyData.hasUsername) {
-        router.push("/posts");
+        router.push("/");
       } else {
         router.push("/associate-username");
       }
@@ -156,7 +156,7 @@ export function WalletAuthPanel({
     <section className="stack">
       <h1 style={{ margin: 0 }}>Login With ADI Wallet</h1>
       <p style={{ marginTop: 0 }}>
-        Connect your wallet on ADI mainnet, sign a nonce challenge, then bind a permanent username.
+        Connect your wallet on ADI mainnet, sign a nonce challenge, then bind a permanent username once.
       </p>
 
       <div className="card stack">
@@ -164,7 +164,7 @@ export function WalletAuthPanel({
         {walletAddress && <p style={{ margin: 0 }} className="muted">Wallet: {walletAddress}</p>}
         {username && <p style={{ margin: 0 }} className="muted">Username: @{username}</p>}
         {loggedIn && !hasUsername && (
-          <p style={{ margin: 0 }} className="error">Username not yet associated. Complete setup.</p>
+          <p style={{ margin: 0 }} className="error">Username setup pending. Continue to setup once.</p>
         )}
         <div className="navlinks">
           <button type="button" onClick={onConnectWallet} disabled={loading}>

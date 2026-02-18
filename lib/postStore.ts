@@ -41,7 +41,16 @@ export async function listPosts(): Promise<Post[]> {
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
-export async function addPost(input: { poster: string; header: string; content: string }): Promise<{ ok: true; post: Post } | { ok: false; error: string }> {
+export async function getPostById(postId: string): Promise<Post | null> {
+  const posts = await listPosts();
+  return posts.find((post) => post.id === postId) ?? null;
+}
+
+export async function addPost(input: {
+  poster: string;
+  header: string;
+  content: string;
+}): Promise<{ ok: true; post: Post } | { ok: false; error: string }> {
   if (input.header.trim().length < 4) {
     return { ok: false, error: "Header must be at least 4 characters." };
   }

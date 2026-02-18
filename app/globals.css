@@ -102,12 +102,6 @@ button.secondary:hover {
   filter: brightness(0.95);
 }
 
-.grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-}
-
 .error {
   color: #b42318;
 }
@@ -126,6 +120,37 @@ button.secondary:hover {
 
 .post-card {
   border-left: 4px solid #ff4500;
+}
+
+.post-shell {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.vote-col {
+  display: flex;
+  justify-content: center;
+}
+
+.vote-pill {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-width: 28px;
+  text-align: center;
+}
+
+.post-title-link {
+  color: #0b3954;
+  text-decoration: none;
+}
+
+.post-title-link:hover {
+  text-decoration: underline;
 }
 
 .post-meta {

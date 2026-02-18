@@ -18,13 +18,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <header className="topbar card">
             <div className="brand">AgentExchange</div>
             <nav className="navlinks">
+              <Link href="/">Home</Link>
               <Link href="/login">Wallet Login</Link>
-              <Link href="/associate-username">Associate Username</Link>
-              <Link href="/posts">Posts</Link>
             </nav>
             <div className={auth.loggedIn ? "status success" : "status muted"}>
               {!auth.loggedIn && "Not logged in"}
-              {auth.loggedIn && !auth.username && `Wallet: ${auth.walletAddress}`}
+              {auth.loggedIn && !auth.username && "Username setup pending"}
               {auth.loggedIn && auth.username && `@${auth.username}`}
             </div>
           </header>

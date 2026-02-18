@@ -1,6 +1,6 @@
 # ethd-2026
 
-Next.js + TypeScript scaffold with ADI wallet login and global text-file posts.
+Next.js + TypeScript scaffold with ADI wallet login and a Reddit-style social feed.
 
 ## ADI chain details used
 
@@ -17,17 +17,16 @@ Sourced from ADI docs: https://docs.adi.foundation/how-to-start/adi-network-main
 1. `npm install`
 2. `npm run dev`
 3. Open:
+   - `http://localhost:3000/` (home chronological feed)
    - `http://localhost:3000/login`
-   - `http://localhost:3000/associate-username`
-   - `http://localhost:3000/posts`
 
-## Auth flow
+## Current workflow
 
-1. Connect wallet on ADI chain.
-2. Sign server challenge message.
-3. Session cookie stores wallet address.
-4. If wallet has no username yet, user is sent to `associate-username`.
-5. Username can be set only once and cannot be changed.
+1. Login with ADI wallet.
+2. If first login only: set permanent username on `/associate-username`.
+3. Home page (`/`) shows all posts in chronological order.
+4. Creating a post redirects to a dedicated question page `/posts/:postId`.
+5. Question page currently shows waiting state for future agent replies.
 
 ## Storage
 
@@ -46,7 +45,7 @@ Sourced from ADI docs: https://docs.adi.foundation/how-to-start/adi-network-main
 
 ## Folder intent
 
-- `app/(frontend)/`: UI pages/components routes.
-- `app/(backend)/api/`: backend API routes.
+- `app/(frontend)/`: user-facing pages.
+- `app/(backend)/api/`: API routes.
 - `models/`: data shapes and constructors (`User`, `Post`).
 - `lib/`: shared logic (session helpers, stores, ADI constants).

@@ -17,7 +17,6 @@ export function PostBoard({
   hasUsername: boolean;
 }) {
   const router = useRouter();
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
@@ -46,28 +45,26 @@ export function PostBoard({
       return;
     }
 
-    setPosts((prev) => [data.post as Post, ...prev]);
-    setMessage("Post created.");
-    form.reset();
+    router.push(`/posts/${data.post.id}`);
     router.refresh();
   }
 
   return (
     <section className="stack">
       <div className="card stack">
-        <h1 style={{ margin: 0 }}>Global Posts</h1>
+        <h1 style={{ margin: 0 }}>Home Feed</h1>
         <p style={{ margin: 0 }} className="muted">
-          Reddit-style global board for testing. Posting stays open, but logged-in users post as their linked username.
+          Chronological global question feed. New posts open their dedicated waiting page.
         </p>
         {currentWalletAddress && !hasUsername && (
           <p style={{ margin: 0 }} className="error">
-            Wallet connected but username not set. <Link href="/associate-username">Associate your username</Link>.
+            Wallet connected but username not set. <Link href="/associate-username">Finish setup</Link>.
           </p>
         )}
       </div>
 
       <form className="card stack" onSubmit={onCreatePost}>
-        <h2 style={{ margin: 0 }}>Create post</h2>
+        <h2 style={{ margin: 0 }}>Ask a question</h2>
         {currentUsername ? (
           <p style={{ margin: 0 }} className="muted">Posting as @{currentUsername}</p>
         ) : (
@@ -78,25 +75,34 @@ export function PostBoard({
         )}
         <label>
           Header
-          <input name="header" placeholder="Short title" minLength={4} required />
+          <input name="header" placeholder="Question title" minLength={4} required />
         </label>
         <label>
           Content
-          <textarea name="content" rows={6} placeholder="Write your post..." minLength={10} required />
+          <textarea name="content" rows={6} placeholder="Describe your question..." minLength={10} required />
         </label>
-        <button type="submit" disabled={loading}>{loading ? "Posting..." : "Post"}</button>
-        {message && <p className={message.includes("created") ? "success" : "error"}>{message}</p>}
+        <button type="submit" disabled={loading}>{loading ? "Posting..." : "Post Question"}</button>
+        {message && <p className="error">{message}</p>}
       </form>
 
       <section className="stack">
-        {posts.length === 0 && <div className="card muted">No posts yet.</div>}
-        {posts.map((post) => (
-          <article key={post.id} className="card post-card stack">
-            <h3 style={{ margin: 0 }}>{post.header}</h3>
-            <p style={{ margin: 0 }}>{post.content}</p>
-            <p className="post-meta" style={{ margin: 0 }}>
-              posted by @{post.poster} on {new Date(post.createdAt).toLocaleString()}
-            </p>
+        {initialPosts.length === 0 && <div className="card muted">No posts yet.</div>}
+        {initialPosts.map((post) => (
+          <article key={post.id} className="card post-card">
+            <div className="post-shell">
+              <div className="vote-col">
+                <div className="vote-pill">0</div>
+              </div>
+              <div className="stack" style={{ gap: 8 }}>
+                <Link href={`/posts/${post.id}`} className="post-title-link">
+                  <h3 style={{ margin: 0 }}>{post.header}</h3>
+                </Link>
+                <p style={{ margin: 0 }}>{post.content}</p>
+                <p className="post-meta" style={{ margin: 0 }}>
+                  posted by @{post.poster} on {new Date(post.createdAt).toLocaleString()}
+                </p>
+              </div>
+            </div>
           </article>
         ))}
       </section>

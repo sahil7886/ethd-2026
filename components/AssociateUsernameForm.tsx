@@ -32,7 +32,7 @@ export function AssociateUsernameForm({ walletAddress }: { walletAddress: string
     }
 
     setMessage("Username associated successfully.");
-    router.push("/posts");
+    router.push("/");
     router.refresh();
   }
 
@@ -40,7 +40,7 @@ export function AssociateUsernameForm({ walletAddress }: { walletAddress: string
     <section className="stack">
       <h1 style={{ margin: 0 }}>Associate Username</h1>
       <p style={{ marginTop: 0 }}>
-        Wallet <code>{walletAddress}</code> is connected. Choose your permanent username.
+        Wallet <code>{walletAddress}</code> is connected. Choose your permanent username (one-time setup).
       </p>
       <form className="card stack" onSubmit={onSubmit}>
         <label>
